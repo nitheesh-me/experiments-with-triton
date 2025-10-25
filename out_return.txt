@@ -1,0 +1,625 @@
+// -----// IR Dump Before Inliner (inline) ('builtin.module' operation) //----- //
+module {
+  tt.func public @return_ir() attributes {noinline = false} {
+    %0 = tt.make_range {end = 8 : i32, start = 0 : i32} : tensor<8xi32> loc(#loc)
+    tt.return loc(#loc)
+  ^bb1:  // no predecessors
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before Canonicalizer (canonicalize) ('tt.func' operation: @return_ir) //----- //
+module {
+  tt.func public @return_ir() attributes {noinline = false} {
+    %0 = tt.make_range {end = 8 : i32, start = 0 : i32} : tensor<8xi32> loc(#loc)
+    tt.return loc(#loc)
+  ^bb1:  // no predecessors
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonRewriteTensorPointer (triton-rewrite-tensor-pointer) ('builtin.module' operation) //----- //
+module {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonRewriteTensorDescriptorToPointer (triton-rewrite-tensor-descriptor-to-pointer) ('builtin.module' operation) //----- //
+module {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before Canonicalizer (canonicalize) ('builtin.module' operation) //----- //
+module {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonCombineOps (triton-combine) ('builtin.module' operation) //----- //
+module {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonReorderBroadcast (triton-reorder-broadcast) ('builtin.module' operation) //----- //
+module {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before CSE (cse) ('builtin.module' operation) //----- //
+module {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before SymbolDCE (symbol-dce) ('builtin.module' operation) //----- //
+module {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonLoopUnroll (triton-loop-unroll) ('builtin.module' operation) //----- //
+module {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before ConvertTritonToTritonGPU (convert-triton-to-tritongpu) ('builtin.module' operation) //----- //
+module {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUCoalesce (tritongpu-coalesce) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUF32DotTC (tritongpu-F32DotTC) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUPlanCTAPass (triton-nvidia-gpu-plan-cta) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPURemoveLayoutConversions (tritongpu-remove-layout-conversions) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUOptimizeThreadLocality (tritongpu-optimize-thread-locality) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUAccelerateMatmul (tritongpu-accelerate-matmul) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPURemoveLayoutConversions (tritongpu-remove-layout-conversions) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUOptimizeDotOperands (tritongpu-optimize-dot-operands) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before Canonicalizer (canonicalize) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonNvidiaGPUOptimizeDescriptorEncodingPass (triton-nvidia-optimize-descriptor-encoding) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonLoopAwareCSE (triton-loop-aware-cse) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUFuseNestedLoops (tritongpu-fuse-nested-loops) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before Canonicalizer (canonicalize) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonLoopInvariantCodeMotion (triton-licm) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before Canonicalizer (canonicalize) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUCombineTensorSelectAndIf (tritongpu-combine-tensor-select-and-if) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before NVGPUWarpSpecialization (nvgpu-warp-specialization) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUAssignLatencies (tritongpu-assign-latencies) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUScheduleLoops (tritongpu-schedule-loops) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUPipeline (tritongpu-pipeline) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// SoftwarePipeliner internal IR Dump After: LowerLoops
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return
+  }
+}
+
+
+// -----// SoftwarePipeliner internal IR Dump After: ExpandLoops
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return
+  }
+}
+
+
+// -----// IR Dump Before Canonicalizer (canonicalize) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonLoopAwareCSE (triton-loop-aware-cse) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUPrefetch (tritongpu-prefetch) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUOptimizeDotOperands (tritongpu-optimize-dot-operands) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before Canonicalizer (canonicalize) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUCoalesceAsyncCopy (tritongpu-coalesce-async-copy) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonNvidiaGPUOptimizeTMemLayoutsPass (triton-nvidia-optimize-tmem-layouts) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPURemoveLayoutConversions (tritongpu-remove-layout-conversions) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonNvidiaGPUInterleaveTMemPass (triton-nvidia-interleave-tmem) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUReduceDataDuplication (tritongpu-reduce-data-duplication) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUReorderInstructions (tritongpu-reorder-instructions) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonLoopAwareCSE (triton-loop-aware-cse) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before SymbolDCE (symbol-dce) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUFenceInsertion (triton-nvidia-gpu-fence-insertion) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonNvidiaGPUMMALoweringPass (triton-nvidia-mma-lowering) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before SCCP (sccp) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before CSE (cse) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before Canonicalizer (canonicalize) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUCombineTensorSelectAndIf (tritongpu-combine-tensor-select-and-if) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUAllocateWarpGroups (tritongpu-allocate-warp-groups) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before SCFToControlFlowPass (convert-scf-to-cf) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before AllocateSharedMemoryNv (allocate-shared-memory-nv) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonTensorMemoryAllocationPass (triton-tensor-memory-allocation) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUGlobalScratchAllocationPass (tritongpu-global-scratch-memory-allocation) ('builtin.module' operation) //----- //
+module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  tt.func public @return_ir() attributes {noinline = false} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before TritonGPUProxyFenceInsertion (triton-nvidia-gpu-proxy-fence-insertion) ('builtin.module' operation) //----- //
+module attributes {ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32, "ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  tt.func public @return_ir() attributes {noinline = false, ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before ConvertTritonGPUToLLVM (convert-triton-gpu-to-llvm) ('builtin.module' operation) //----- //
+module attributes {ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32, "ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  tt.func public @return_ir() attributes {noinline = false, ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32} {
+    tt.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc = loc(unknown)
+
+
+// -----// IR Dump Before Canonicalizer (canonicalize) ('builtin.module' operation) //----- //
+#loc = loc(unknown)
+module attributes {ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32, "ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  llvm.mlir.global external @global_smem() {addr_space = 3 : i32, alignment = 16 : i64} : !llvm.array<0 x i8> loc(#loc)
+  llvm.func @return_ir(%arg0: !llvm.ptr<1> loc(unknown), %arg1: !llvm.ptr<1> loc(unknown)) attributes {noinline = false, nvvm.kernel = 1 : ui1, nvvm.reqntid = array<i32: 128>, ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32} {
+    llvm.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+
+
+// -----// IR Dump Before CSE (cse) ('builtin.module' operation) //----- //
+#loc = loc(unknown)
+module attributes {ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32, "ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  llvm.mlir.global external @global_smem() {addr_space = 3 : i32, alignment = 16 : i64} : !llvm.array<0 x i8> loc(#loc)
+  llvm.func @return_ir(%arg0: !llvm.ptr<1> loc(unknown), %arg1: !llvm.ptr<1> loc(unknown)) attributes {noinline = false, nvvm.kernel = 1 : ui1, nvvm.reqntid = array<i32: 128>, ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32} {
+    llvm.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+
+
+// -----// IR Dump Before ConvertNVGPUToLLVM (convert-nv-gpu-to-llvm) ('builtin.module' operation) //----- //
+#loc = loc(unknown)
+module attributes {ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32, "ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  llvm.mlir.global external @global_smem() {addr_space = 3 : i32, alignment = 16 : i64} : !llvm.array<0 x i8> loc(#loc)
+  llvm.func @return_ir(%arg0: !llvm.ptr<1> loc(unknown), %arg1: !llvm.ptr<1> loc(unknown)) attributes {noinline = false, nvvm.kernel = 1 : ui1, nvvm.reqntid = array<i32: 128>, ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32} {
+    llvm.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+
+
+// -----// IR Dump Before ConvertWarpSpecializeToLLVM (convert-warp-specialize-to-llvm) ('builtin.module' operation) //----- //
+#loc = loc(unknown)
+module attributes {ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32, "ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  llvm.mlir.global external @global_smem() {addr_space = 3 : i32, alignment = 16 : i64} : !llvm.array<0 x i8> loc(#loc)
+  llvm.func @return_ir(%arg0: !llvm.ptr<1> loc(unknown), %arg1: !llvm.ptr<1> loc(unknown)) attributes {noinline = false, nvvm.kernel = 1 : ui1, nvvm.reqntid = array<i32: 128>, ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32} {
+    llvm.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+
+
+// -----// IR Dump Before ReconcileUnrealizedCastsPass (reconcile-unrealized-casts) ('builtin.module' operation) //----- //
+#loc = loc(unknown)
+module attributes {ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32, "ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  llvm.mlir.global external @global_smem() {addr_space = 3 : i32, alignment = 16 : i64} : !llvm.array<0 x i8> loc(#loc)
+  llvm.func @return_ir(%arg0: !llvm.ptr<1> loc(unknown), %arg1: !llvm.ptr<1> loc(unknown)) attributes {noinline = false, nvvm.kernel = 1 : ui1, nvvm.reqntid = array<i32: 128>, ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32} {
+    llvm.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+
+
+// -----// IR Dump Before Canonicalizer (canonicalize) ('builtin.module' operation) //----- //
+#loc = loc(unknown)
+module attributes {ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32, "ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  llvm.mlir.global external @global_smem() {addr_space = 3 : i32, alignment = 16 : i64} : !llvm.array<0 x i8> loc(#loc)
+  llvm.func @return_ir(%arg0: !llvm.ptr<1> loc(unknown), %arg1: !llvm.ptr<1> loc(unknown)) attributes {noinline = false, nvvm.kernel = 1 : ui1, nvvm.reqntid = array<i32: 128>, ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32} {
+    llvm.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+
+
+// -----// IR Dump Before CSE (cse) ('builtin.module' operation) //----- //
+#loc = loc(unknown)
+module attributes {ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32, "ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  llvm.mlir.global external @global_smem() {addr_space = 3 : i32, alignment = 16 : i64} : !llvm.array<0 x i8> loc(#loc)
+  llvm.func @return_ir(%arg0: !llvm.ptr<1> loc(unknown), %arg1: !llvm.ptr<1> loc(unknown)) attributes {noinline = false, nvvm.kernel = 1 : ui1, nvvm.reqntid = array<i32: 128>, ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32} {
+    llvm.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+
+
+// -----// IR Dump Before SymbolDCE (symbol-dce) ('builtin.module' operation) //----- //
+#loc = loc(unknown)
+module attributes {ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32, "ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  llvm.mlir.global external @global_smem() {addr_space = 3 : i32, alignment = 16 : i64} : !llvm.array<0 x i8> loc(#loc)
+  llvm.func @return_ir(%arg0: !llvm.ptr<1> loc(unknown), %arg1: !llvm.ptr<1> loc(unknown)) attributes {noinline = false, nvvm.kernel = 1 : ui1, nvvm.reqntid = array<i32: 128>, ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32} {
+    llvm.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+
+
+// -----// IR Dump Before ConvertNVVMToLLVMPass (convert-nvvm-to-llvm) ('builtin.module' operation) //----- //
+#loc = loc(unknown)
+module attributes {ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32, "ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.shared = 0 : i32, ttg.target = "cuda:89", ttg.tensor_memory_size = 0 : i32, "ttg.threads-per-warp" = 32 : i32, "ttg.total-num-warps" = 4 : i32} {
+  llvm.mlir.global external @global_smem() {addr_space = 3 : i32, alignment = 16 : i64} : !llvm.array<0 x i8> loc(#loc)
+  llvm.func @return_ir(%arg0: !llvm.ptr<1> loc(unknown), %arg1: !llvm.ptr<1> loc(unknown)) attributes {noinline = false, nvvm.kernel = 1 : ui1, nvvm.reqntid = array<i32: 128>, ttg.global_scratch_memory_alignment = 1 : i32, ttg.global_scratch_memory_size = 0 : i32} {
+    llvm.return loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+
+
