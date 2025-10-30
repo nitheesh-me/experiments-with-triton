@@ -93,6 +93,31 @@ def add_kernel(x_ptr,
     output = x + y
     tl.store(output_ptr + offsets, output, mask=mask)
 
+@triton.jit
+def add_2d_kernel(
+        a_ptr, b_ptr, c_ptr,
+        M, N,
+        stride_am, stride_an,
+        stride_bm, stride_bn,
+        stride_cm, stride_cn,
+        # Meta-parameters
+        BLOCK_SIZE_M: tl.constexpr, BLOCK_SIZE_N: tl.constexpr,
+):
+    pid_m = tl.program_id(axis=0)
+    pid_n = tl.program_id(axis=1)
+    offs_m = (pid_m * BLOCK_SIZE_M + tl.arange(0, BLOCK_SIZE_M)) % M
+    offs_n = (pid_n * BLOCK_SIZE_N + tl.arange(0, BLOCK_SIZE_N)) % N
+    a_ptrs = a_ptr + (offs_m[:, None] * stride_am + offs_n[None, :] * stride_an)
+    b_ptrs = b_ptr + (offs_m[:, None] * stride_bm + offs_n[None, :] * stride_bn)
+    c_ptrs = c_ptr + (offs_m[:, None] * stride_cm + offs_n[None, :] * stride_cn)
+    
+    masks = (offs_m[:, None] < M) & (offs_n[None, :] < N)
+
+    a = tl.load(a_ptrs, mask=masks, other=0.0)
+    b = tl.load(b_ptrs, mask=masks, other=0.0)
+    c = a + b
+    tl.store(c_ptrs, c, mask=masks)
+
 # `triton.jit`'ed functions can be auto-tuned by using the `triton.autotune` decorator, which consumes:
 #   - A list of `triton.Config` objects that define different configurations of
 #       meta-parameters (e.g., `BLOCK_SIZE_M`) and compilation options (e.g., `num_warps`) to try
@@ -204,6 +229,18 @@ def add_1d(x: torch.Tensor, y: torch.Tensor):
     # triton_kernel=add_kernel[grid](x, y, output, n_elements, BLOCK_SIZE=1024)
     torch.cuda.synchronize()
     add_kernel[grid](x, y, output, n_elements, BLOCK_SIZE=1024)
+    return output
+
+def add_2d(a: torch.Tensor, b: torch.Tensor):
+    output = torch.empty_like(a)
+    M, N = a.shape
+    grid = lambda meta: (triton.cdiv(M, meta['BLOCK_SIZE_M']), triton.cdiv(N, meta['BLOCK_SIZE_N']))
+    add_2d_kernel[grid](a, b, output,
+                    a.stride(0), a.stride(1),
+                    b.stride(0), b.stride(1),
+                    output.stride(0), output.stride(1),
+                    BLOCK_SIZE_M = 32, BLOCK_SIZE_N = 32
+                )
     return output
 
 def matmul(a, b, activation=""):
