@@ -236,6 +236,7 @@ def add_2d(a: torch.Tensor, b: torch.Tensor):
     M, N = a.shape
     grid = lambda meta: (triton.cdiv(M, meta['BLOCK_SIZE_M']), triton.cdiv(N, meta['BLOCK_SIZE_N']))
     add_2d_kernel[grid](a, b, output,
+                    M, N,
                     a.stride(0), a.stride(1),
                     b.stride(0), b.stride(1),
                     output.stride(0), output.stride(1),
@@ -267,6 +268,11 @@ def add_1d_random():
     x = torch.rand(5, device=DEVICE)
     y = torch.rand(5, device=DEVICE)
     return add_1d(x, y)
+
+def add_2d_random(M=32, N=32):
+    x = torch.rand((M, N), device=DEVICE, dtype=torch.float32)
+    y = torch.rand((M, N), device=DEVICE, dtype=torch.float32)
+    return add_2d(x, y)
 
 def matmul_random(M=16, N=16, K=8, activation=""):
     a = torch.randn((M, K), device=DEVICE, dtype=torch.float32)
