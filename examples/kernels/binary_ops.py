@@ -97,7 +97,7 @@ def add_kernel(x_ptr,
 def add_2d_kernel(
         a_ptr, b_ptr, c_ptr,
         M, N,
-        stride_am, stride_an,
+        stride_am, stride_an, # swap strides to transpose
         stride_bm, stride_bn,
         stride_cm, stride_cn,
         # Meta-parameters
@@ -231,17 +231,31 @@ def add_1d(x: torch.Tensor, y: torch.Tensor):
     add_kernel[grid](x, y, output, n_elements, BLOCK_SIZE=1024)
     return output
 
-def add_2d(a: torch.Tensor, b: torch.Tensor):
+def add_2d(a: torch.Tensor, b: torch.Tensor, transpose_a=False, transpose_b=False):
+    """
+    does not check if the shapes are compatible
+    """
     output = torch.empty_like(a)
     M, N = a.shape
     grid = lambda meta: (triton.cdiv(M, meta['BLOCK_SIZE_M']), triton.cdiv(N, meta['BLOCK_SIZE_N']))
-    add_2d_kernel[grid](a, b, output,
-                    M, N,
-                    a.stride(0), a.stride(1),
-                    b.stride(0), b.stride(1),
-                    output.stride(0), output.stride(1),
-                    BLOCK_SIZE_M = 32, BLOCK_SIZE_N = 32
-                )
+    if not (transpose_a and transpose_b):
+        add_2d_kernel[grid](a, b, output,
+                        M, N,
+                        a.stride(0), a.stride(1),
+                        b.stride(0), b.stride(1),
+                        output.stride(0), output.stride(1),
+                        BLOCK_SIZE_M = 32, BLOCK_SIZE_N = 32
+                    )
+    elif transpose_a and not transpose_b:
+        add_2d_kernel[grid](a, b, output,
+                        M, N,
+                        a.stride(1), a.stride(0),
+                        b.stride(0), b.stride(1),
+                        output.stride(0), output.stride(1),
+                        BLOCK_SIZE_M = 32, BLOCK_SIZE_N = 32
+                    )
+    else:
+        raise NotImplementedError("Only transpose_a is implemented")
     return output
 
 def matmul(a, b, activation=""):
@@ -273,6 +287,11 @@ def add_2d_random(M=32, N=32):
     x = torch.rand((M, N), device=DEVICE, dtype=torch.float32)
     y = torch.rand((M, N), device=DEVICE, dtype=torch.float32)
     return add_2d(x, y)
+
+def add_2d_uncoalesced(M=32, N=32):
+    x = torch.rand((M, N), device=DEVICE, dtype=torch.float32)
+    y = torch.rand((M, N), device=DEVICE, dtype=torch.float32)
+    return add_2d(x, y, transpose_a=True)
 
 def matmul_random(M=16, N=16, K=8, activation=""):
     a = torch.randn((M, K), device=DEVICE, dtype=torch.float32)
