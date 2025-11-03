@@ -8,18 +8,24 @@ module {
     %c32_i32_0 = arith.constant 32 : i32 loc(#loc3)
     %2 = arith.extsi %0 : i32 to i64 loc(#loc3)
     %3 = arith.extsi %c32_i32_0 : i32 to i64 loc(#loc3)
-    %4 = arith.muli %2, %3 : i64 loc(#loc3)
+    %4 = arith.muli %2, %3 : i64 loc(#loc3) // pid_x * BLOCK_SIZE_X
+    
+    //----- ignore this block, just sanity check
     %c2147483647_i64 = arith.constant 2147483647 : i64 loc(#loc3)
     %c-2147483648_i64 = arith.constant -2147483648 : i64 loc(#loc3)
     %5 = arith.cmpi sle, %4, %c2147483647_i64 : i64 loc(#loc3)
     %6 = arith.cmpi sge, %4, %c-2147483648_i64 : i64 loc(#loc3)
     %7 = arith.andi %5, %6 : i1 loc(#loc3)
+    //----
+
     %8 = arith.muli %0, %c32_i32_0 : i32 loc(#loc3)
     %9 = tt.make_range {end = 32 : i32, start = 0 : i32} : tensor<32xi32> loc(#loc4)
     %10 = tt.splat %8 : i32 -> tensor<32xi32> loc(#loc5)
     %11 = arith.extsi %10 : tensor<32xi32> to tensor<32xi64> loc(#loc5)
     %12 = arith.extsi %9 : tensor<32xi32> to tensor<32xi64> loc(#loc5)
-    %13 = arith.addi %11, %12 : tensor<32xi64> loc(#loc5)
+    %13 = arith.addi %11, %12 : tensor<32xi64> loc(#loc5) // offs_m = pid_x * BLOCK_SIZE_X + tl.arange(0,32)
+
+    //----
     %c2147483647_i64_1 = arith.constant 2147483647 : i64 loc(#loc5)
     %c-2147483648_i64_2 = arith.constant -2147483648 : i64 loc(#loc5)
     %cst = arith.constant dense<2147483647> : tensor<32xi64> loc(#loc5)
@@ -27,9 +33,13 @@ module {
     %cst_3 = arith.constant dense<-2147483648> : tensor<32xi64> loc(#loc5)
     %15 = arith.cmpi sge, %13, %cst_3 : tensor<32xi64> loc(#loc5)
     %16 = arith.andi %14, %15 : tensor<32xi1> loc(#loc5)
-    %17 = arith.addi %10, %9 : tensor<32xi32> loc(#loc5)
+    //----
+
+    %17 = arith.addi %10, %9 : tensor<32xi32> loc(#loc5) // offs_m:i32 = pid_x * BLOCK_SIZE_X + tl.arange(0,32)
     %18 = tt.splat %arg3 : i32 -> tensor<32xi32> loc(#loc6)
-    %19 = arith.remsi %17, %18 : tensor<32xi32> loc(#loc6)
+    %19 = arith.remsi %17, %18 : tensor<32xi32> loc(#loc6) // offs_m % M
+
+    //---- similar instructions for pid_y
     %c32_i32_4 = arith.constant 32 : i32 loc(#loc7)
     %c32_i32_5 = arith.constant 32 : i32 loc(#loc7)
     %20 = arith.extsi %1 : i32 to i64 loc(#loc7)
@@ -55,12 +65,16 @@ module {
     %34 = arith.andi %32, %33 : tensor<32xi1> loc(#loc9)
     %35 = arith.addi %28, %27 : tensor<32xi32> loc(#loc9)
     %36 = tt.splat %arg4 : i32 -> tensor<32xi32> loc(#loc10)
-    %37 = arith.remsi %35, %36 : tensor<32xi32> loc(#loc10)
+    %37 = arith.remsi %35, %36 : tensor<32xi32> loc(#loc10) // offs_n % N
+    //----
+
+    //--- offs_m[:, None] * stride_am + offs_n[None, :] * stride_an
     %38 = tt.expand_dims %19 {axis = 1 : i32} : tensor<32xi32> -> tensor<32x1xi32> loc(#loc11)
     %39 = tt.splat %arg5 : i32 -> tensor<32x1xi32> loc(#loc12)
     %40 = arith.extsi %38 : tensor<32x1xi32> to tensor<32x1xi64> loc(#loc12)
     %41 = arith.extsi %39 : tensor<32x1xi32> to tensor<32x1xi64> loc(#loc12)
-    %42 = arith.muli %40, %41 : tensor<32x1xi64> loc(#loc12)
+    %42 = arith.muli %40, %41 : tensor<32x1xi64> loc(#loc12) // offs_m[:, None] * stride_am
+
     %c2147483647_i64_12 = arith.constant 2147483647 : i64 loc(#loc12)
     %c-2147483648_i64_13 = arith.constant -2147483648 : i64 loc(#loc12)
     %cst_14 = arith.constant dense<2147483647> : tensor<32x1xi64> loc(#loc12)
@@ -68,14 +82,16 @@ module {
     %cst_15 = arith.constant dense<-2147483648> : tensor<32x1xi64> loc(#loc12)
     %44 = arith.cmpi sge, %42, %cst_15 : tensor<32x1xi64> loc(#loc12)
     %45 = arith.andi %43, %44 : tensor<32x1xi1> loc(#loc12)
-    %46 = arith.muli %38, %39 : tensor<32x1xi32> loc(#loc12)
-    %47 = tt.expand_dims %37 {axis = 0 : i32} : tensor<32xi32> -> tensor<1x32xi32> loc(#loc13)
+    %46 = arith.muli %38, %39 : tensor<32x1xi32> loc(#loc12) //i32: offs_m[:, None] * stride_am
+
+    %47 = tt.expand_dims %37 {axis = 0 : i32} : tensor<32xi32> -> tensor<1x32xi32> loc(#loc13) // %37=offs_n
     %c1_i32 = arith.constant 1 : i32 loc(#loc14)
     %c1_i32_16 = arith.constant 1 : i32 loc(#loc14)
     %cst_17 = arith.constant dense<1> : tensor<1x32xi32> loc(#loc14)
     %48 = arith.extsi %47 : tensor<1x32xi32> to tensor<1x32xi64> loc(#loc14)
     %49 = arith.extsi %cst_17 : tensor<1x32xi32> to tensor<1x32xi64> loc(#loc14)
-    %50 = arith.muli %48, %49 : tensor<1x32xi64> loc(#loc14)
+    %50 = arith.muli %48, %49 : tensor<1x32xi64> loc(#loc14) // offs_n[None, :] * stride_an
+
     %c2147483647_i64_18 = arith.constant 2147483647 : i64 loc(#loc14)
     %c-2147483648_i64_19 = arith.constant -2147483648 : i64 loc(#loc14)
     %cst_20 = arith.constant dense<2147483647> : tensor<1x32xi64> loc(#loc14)
@@ -83,12 +99,14 @@ module {
     %cst_21 = arith.constant dense<-2147483648> : tensor<1x32xi64> loc(#loc14)
     %52 = arith.cmpi sge, %50, %cst_21 : tensor<1x32xi64> loc(#loc14)
     %53 = arith.andi %51, %52 : tensor<1x32xi1> loc(#loc14)
-    %54 = arith.muli %47, %cst_17 : tensor<1x32xi32> loc(#loc14)
+    %54 = arith.muli %47, %cst_17 : tensor<1x32xi32> loc(#loc14) // offs_n[None, :] * stride_an
+
     %55 = tt.broadcast %46 : tensor<32x1xi32> -> tensor<32x32xi32> loc(#loc15)
     %56 = tt.broadcast %54 : tensor<1x32xi32> -> tensor<32x32xi32> loc(#loc15)
     %57 = arith.extsi %55 : tensor<32x32xi32> to tensor<32x32xi64> loc(#loc15)
     %58 = arith.extsi %56 : tensor<32x32xi32> to tensor<32x32xi64> loc(#loc15)
-    %59 = arith.addi %57, %58 : tensor<32x32xi64> loc(#loc15)
+    %59 = arith.addi %57, %58 : tensor<32x32xi64> loc(#loc15) // add both offsets: offs_m[:, None] * stride_am + offs_n[None, :] * stride_an
+    
     %c2147483647_i64_22 = arith.constant 2147483647 : i64 loc(#loc15)
     %c-2147483648_i64_23 = arith.constant -2147483648 : i64 loc(#loc15)
     %cst_24 = arith.constant dense<2147483647> : tensor<32x32xi64> loc(#loc15)
@@ -96,9 +114,12 @@ module {
     %cst_25 = arith.constant dense<-2147483648> : tensor<32x32xi64> loc(#loc15)
     %61 = arith.cmpi sge, %59, %cst_25 : tensor<32x32xi64> loc(#loc15)
     %62 = arith.andi %60, %61 : tensor<32x32xi1> loc(#loc15)
-    %63 = arith.addi %55, %56 : tensor<32x32xi32> loc(#loc15)
+    %63 = arith.addi %55, %56 : tensor<32x32xi32> loc(#loc15) // i32: offs_m[:, None] * stride_am + offs_n[None, :] * stride_an
+    
     %64 = tt.splat %arg0 : !tt.ptr<f32> -> tensor<32x32x!tt.ptr<f32>> loc(#loc16)
-    %65 = tt.addptr %64, %63 : tensor<32x32x!tt.ptr<f32>>, tensor<32x32xi32> loc(#loc16)
+    %65 = tt.addptr %64, %63 : tensor<32x32x!tt.ptr<f32>>, tensor<32x32xi32> loc(#loc16) // a_ptr + offs
+
+    //---- b and c pointers: b_ptrs = b_ptr + offs
     %66 = tt.expand_dims %19 {axis = 1 : i32} : tensor<32xi32> -> tensor<32x1xi32> loc(#loc17)
     %67 = tt.splat %arg6 : i32 -> tensor<32x1xi32> loc(#loc18)
     %68 = arith.extsi %66 : tensor<32x1xi32> to tensor<32x1xi64> loc(#loc18)
@@ -185,23 +206,25 @@ module {
     %119 = arith.addi %111, %112 : tensor<32x32xi32> loc(#loc27)
     %120 = tt.splat %arg2 : !tt.ptr<f32> -> tensor<32x32x!tt.ptr<f32>> loc(#loc28)
     %121 = tt.addptr %120, %119 : tensor<32x32x!tt.ptr<f32>>, tensor<32x32xi32> loc(#loc28)
-    %122 = tt.expand_dims %19 {axis = 1 : i32} : tensor<32xi32> -> tensor<32x1xi32> loc(#loc29)
-    %123 = tt.splat %arg3 : i32 -> tensor<32x1xi32> loc(#loc30)
-    %124 = arith.cmpi slt, %122, %123 : tensor<32x1xi32> loc(#loc30)
-    %125 = tt.expand_dims %37 {axis = 0 : i32} : tensor<32xi32> -> tensor<1x32xi32> loc(#loc31)
-    %126 = tt.splat %arg4 : i32 -> tensor<1x32xi32> loc(#loc32)
-    %127 = arith.cmpi slt, %125, %126 : tensor<1x32xi32> loc(#loc32)
-    %128 = tt.broadcast %124 : tensor<32x1xi1> -> tensor<32x32xi1> loc(#loc33)
+    //----
+
+    %122 = tt.expand_dims %19 {axis = 1 : i32} : tensor<32xi32> -> tensor<32x1xi32> loc(#loc29) // offs_m[:, None]
+    %123 = tt.splat %arg3 : i32 -> tensor<32x1xi32> loc(#loc30) // M
+    %124 = arith.cmpi slt, %122, %123 : tensor<32x1xi32> loc(#loc30) // offs_m < M
+    %125 = tt.expand_dims %37 {axis = 0 : i32} : tensor<32xi32> -> tensor<1x32xi32> loc(#loc31) // offs_n[None, :]
+    %126 = tt.splat %arg4 : i32 -> tensor<1x32xi32> loc(#loc32) // N
+    %127 = arith.cmpi slt, %125, %126 : tensor<1x32xi32> loc(#loc32) // offs_n < N
+    %128 = tt.broadcast %124 : tensor<32x1xi1> -> tensor<32x32xi1> loc(#loc33) 
     %129 = tt.broadcast %127 : tensor<1x32xi1> -> tensor<32x32xi1> loc(#loc33)
-    %130 = arith.andi %128, %129 : tensor<32x32xi1> loc(#loc33)
+    %130 = arith.andi %128, %129 : tensor<32x32xi1> loc(#loc33) // mask = (offs_m[:, None] < M) & (offs_n[None, :] < M)
     %cst_56 = arith.constant 0.000000e+00 : f32 loc(#loc34)
     %cst_57 = arith.constant dense<0.000000e+00> : tensor<32x32xf32> loc(#loc34)
-    %131 = tt.load %65, %130, %cst_57 : tensor<32x32x!tt.ptr<f32>> loc(#loc34)
+    %131 = tt.load %65, %130, %cst_57 : tensor<32x32x!tt.ptr<f32>> loc(#loc34) // load a = tt.load(a_ptrs, mask, other)
     %cst_58 = arith.constant 0.000000e+00 : f32 loc(#loc35)
     %cst_59 = arith.constant dense<0.000000e+00> : tensor<32x32xf32> loc(#loc35)
-    %132 = tt.load %93, %130, %cst_59 : tensor<32x32x!tt.ptr<f32>> loc(#loc35)
-    %133 = arith.addf %131, %132 : tensor<32x32xf32> loc(#loc36)
-    tt.store %121, %133, %130 : tensor<32x32x!tt.ptr<f32>> loc(#loc37)
+    %132 = tt.load %93, %130, %cst_59 : tensor<32x32x!tt.ptr<f32>> loc(#loc35) // load b
+    %133 = arith.addf %131, %132 : tensor<32x32xf32> loc(#loc36) // c = a + b
+    tt.store %121, %133, %130 : tensor<32x32x!tt.ptr<f32>> loc(#loc37) // store c: tt.store(c_ptrs, c, mask)
     tt.return loc(#loc38)
   } loc(#loc)
 } loc(#loc)
