@@ -1277,10 +1277,43 @@ module {
 
 // -----// IR Dump Before TritonGPUCoalesce (tritongpu-coalesce) ('builtin.module' operation) //----- //
 #blocked = #ttg.blocked<{sizePerThread = [1, 1], threadsPerWarp = [1, 32], warpsPerCTA = [4, 1], order = [1, 0]}>
+// #blocked layout (row-major, horizontal tile)
+// 0  1  2  3  ...  32 (warp 0)
+// 33 34       ...  64 (warp 1)
+
+// Linear; each warp covers 32 contiguous elements, next warp continues the line.
 #blocked1 = #ttg.blocked<{sizePerThread = [1], threadsPerWarp = [32], warpsPerCTA = [4], order = [0]}>
 #blocked2 = #ttg.blocked<{sizePerThread = [1, 1], threadsPerWarp = [32, 1], warpsPerCTA = [4, 1], order = [0, 1]}>
+//blocked2 layout (order = [0, 1]; increment rows first, column major, vertical: 32x1 tile)
+// t0 (warp 0);
+// :
+// :
+// t32
+// t0 (warp 1)
+// :
 #blocked3 = #ttg.blocked<{sizePerThread = [1, 1], threadsPerWarp = [32, 1], warpsPerCTA = [4, 1], order = [1, 0]}>
+// #blocked3 layout threadsPerWarp = [32, 1], order = [1, 0]; axis 1 changes first (row major), vertical
+// note: For each column (dim1), the same warp/thread mapping repeats — because the threads are reused for each column position.
+//dim1 → 0     1     2     3
+//dim0 ↓
+//     W0t0  W0t0  W0t0  W0t0
+//     W0t1  W0t1  W0t1  W0t1
+//     W0t2  W0t2  W0t2  W0t2
+//     ...
+//     W0t31 W0t31 W0t31 W0t31
+//     W1t0  W1t0  W1t0  W1t0
+//     W1t1  ...
+//     ...
+// for each column rows are contiguous
+
 #blocked4 = #ttg.blocked<{sizePerThread = [1, 1], threadsPerWarp = [1, 32], warpsPerCTA = [1, 4], order = [0, 1]}>
+// #blocked4 layout: column-major, horizontal stack
+// dim1 → 0   1   2   3   4   5   6   7  ...
+// dim0 ↓
+      //  W0t0 W0t1 W0t2 W0t3 W0t4 W0t5 W0t6 W0t7 ... // each warp covers 1x32 tile
+      //  W1t0 W1t1 W1t2 W1t3 W1t4 W1t5 W1t6 W1t7 ...
+      //  W2t0 W2t1 W2t2 W2t3 W2t4 W2t5 W2t6 W2t7 ...
+      //  W3t0 W3t1 W3t2 W3t3 W3t4 W3t5 W3t6 W3t7 ...
 #loc = loc("examples/kernels/binary_ops.py":97:0)
 module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.target = "cuda:89", "ttg.threads-per-warp" = 32 : i32} {
   tt.func public @add_2d_kernel(%arg0: !tt.ptr<f32> {tt.divisibility = 16 : i32} loc("examples/kernels/binary_ops.py":97:0), %arg1: !tt.ptr<f32> {tt.divisibility = 16 : i32} loc("examples/kernels/binary_ops.py":97:0), %arg2: !tt.ptr<f32> {tt.divisibility = 16 : i32} loc("examples/kernels/binary_ops.py":97:0), %arg3: i32 {tt.divisibility = 16 : i32} loc("examples/kernels/binary_ops.py":97:0), %arg4: i32 {tt.divisibility = 16 : i32} loc("examples/kernels/binary_ops.py":97:0), %arg5: i32 {tt.divisibility = 16 : i32} loc("examples/kernels/binary_ops.py":97:0), %arg6: i32 {tt.divisibility = 16 : i32} loc("examples/kernels/binary_ops.py":97:0), %arg7: i32 {tt.divisibility = 16 : i32} loc("examples/kernels/binary_ops.py":97:0)) attributes {noinline = false} {
@@ -1288,31 +1321,38 @@ module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.targ
     %c32_i32 = arith.constant 32 : i32 loc(#loc1)
     %0 = tt.get_program_id x : i32 loc(#loc2)
     %1 = tt.get_program_id y : i32 loc(#loc3)
-    %2 = arith.muli %0, %c32_i32 : i32 loc(#loc4)
+    %2 = arith.muli %0, %c32_i32 : i32 loc(#loc4) // pid_x * BLOCK_SIZE_M
     %3 = tt.make_range {end = 32 : i32, start = 0 : i32} : tensor<32xi32, #blocked1> loc(#loc5)
     %4 = tt.splat %2 : i32 -> tensor<32xi32, #blocked1> loc(#loc6)
-    %5 = arith.addi %4, %3 : tensor<32xi32, #blocked1> loc(#loc6)
+    %5 = arith.addi %4, %3 : tensor<32xi32, #blocked1> loc(#loc6) // pid_x * BLOCK_SIZE_M + tl.arange(0, 32)
     %6 = tt.splat %arg3 : i32 -> tensor<32xi32, #blocked1> loc(#loc7)
-    %7 = arith.remsi %5, %6 : tensor<32xi32, #blocked1> loc(#loc7)
+    %7 = arith.remsi %5, %6 : tensor<32xi32, #blocked1> loc(#loc7) // (pid_x * BLOCK_SIZE_M + tl.arange(0, 32)) % M
     %8 = arith.muli %1, %c32_i32 : i32 loc(#loc8)
     %9 = tt.splat %8 : i32 -> tensor<32xi32, #blocked1> loc(#loc9)
     %10 = arith.addi %9, %3 : tensor<32xi32, #blocked1> loc(#loc9)
     %11 = tt.splat %arg4 : i32 -> tensor<32xi32, #blocked1> loc(#loc10)
-    %12 = arith.remsi %10, %11 : tensor<32xi32, #blocked1> loc(#loc10)
-    %13 = ttg.convert_layout %7 : tensor<32xi32, #blocked1> -> tensor<32xi32, #ttg.slice<{dim = 1, parent = #blocked2}>> loc(#loc11)
+    %12 = arith.remsi %10, %11 : tensor<32xi32, #blocked1> loc(#loc10) // offs_n = (pid_y * BLOCK_SIZE_M + tl.arange(0, 32)) % N
+
+    // converted layout
+    // [ W0t0, W0t1, W0t2, …, W0t31; W1t0, …, W3t31 ]
+    // the layouts are structurally equivalent; the new type simply says “this 1D tile comes from one column of a 2D parent layout.”
+    %13 = ttg.convert_layout %7 : tensor<32xi32, #blocked1> -> tensor<32xi32, #ttg.slice<{dim = 1, parent = #blocked2}>> loc(#loc11) // offs_m
     %14 = tt.expand_dims %13 {axis = 1 : i32} : tensor<32xi32, #ttg.slice<{dim = 1, parent = #blocked2}>> -> tensor<32x1xi32, #blocked2> loc(#loc11)
-    %15 = ttg.convert_layout %14 : tensor<32x1xi32, #blocked2> -> tensor<32x1xi32, #blocked3> loc(#loc12)
+    %15 = ttg.convert_layout %14 : tensor<32x1xi32, #blocked2> -> tensor<32x1xi32, #blocked3> loc(#loc12) // convert to row-major: offs_m
     %16 = tt.splat %arg5 : i32 -> tensor<32x1xi32, #blocked3> loc(#loc12)
-    %17 = arith.muli %15, %16 : tensor<32x1xi32, #blocked3> loc(#loc12)
-    %18 = ttg.convert_layout %12 : tensor<32xi32, #blocked1> -> tensor<32xi32, #ttg.slice<{dim = 0, parent = #blocked4}>> loc(#loc13)
+    %17 = arith.muli %15, %16 : tensor<32x1xi32, #blocked3> loc(#loc12) // offs_m[32, 1] * stride_am[32, 1]
+    // offs_n[32, 1] * stride_an[32, 1]
+    %18 = ttg.convert_layout %12 : tensor<32xi32, #blocked1> -> tensor<32xi32, #ttg.slice<{dim = 0, parent = #blocked4}>> loc(#loc13) // horizontal: 1x32 tile (offs_n)
     %19 = tt.expand_dims %18 {axis = 0 : i32} : tensor<32xi32, #ttg.slice<{dim = 0, parent = #blocked4}>> -> tensor<1x32xi32, #blocked4> loc(#loc13)
-    %20 = ttg.convert_layout %19 : tensor<1x32xi32, #blocked4> -> tensor<1x32xi32, #blocked> loc(#loc14)
-    %21 = tt.broadcast %17 : tensor<32x1xi32, #blocked3> -> tensor<32x32xi32, #blocked3> loc(#loc14)
-    %22 = ttg.convert_layout %21 : tensor<32x32xi32, #blocked3> -> tensor<32x32xi32, #blocked> loc(#loc14)
-    %23 = tt.broadcast %20 : tensor<1x32xi32, #blocked> -> tensor<32x32xi32, #blocked> loc(#loc14)
-    %24 = arith.addi %22, %23 : tensor<32x32xi32, #blocked> loc(#loc14)
-    %25 = tt.splat %arg0 : !tt.ptr<f32> -> tensor<32x32x!tt.ptr<f32>, #blocked> loc(#loc15)
-    %26 = tt.addptr %25, %24 : tensor<32x32x!tt.ptr<f32>, #blocked>, tensor<32x32xi32, #blocked> loc(#loc15)
+    %20 = ttg.convert_layout %19 : tensor<1x32xi32, #blocked4> -> tensor<1x32xi32, #blocked> loc(#loc14) // convert to row-major (already horizontal)
+    %21 = tt.broadcast %17 : tensor<32x1xi32, #blocked3> -> tensor<32x32xi32, #blocked3> loc(#loc14) // offs_m[32, 32] * stride_am[32, 32]
+    %22 = ttg.convert_layout %21 : tensor<32x32xi32, #blocked3> -> tensor<32x32xi32, #blocked> loc(#loc14) // convert vertical to horizontal layout
+    %23 = tt.broadcast %20 : tensor<1x32xi32, #blocked> -> tensor<32x32xi32, #blocked> loc(#loc14)  // offs_n[32, 32]
+    %24 = arith.addi %22, %23 : tensor<32x32xi32, #blocked> loc(#loc14) // offs = offs_m * stride_am + offs_n * 1: 32x32 tensor
+    %25 = tt.splat %arg0 : !tt.ptr<f32> -> tensor<32x32x!tt.ptr<f32>, #blocked> loc(#loc15) // base a_ptr[32,32]
+    %26 = tt.addptr %25, %24 : tensor<32x32x!tt.ptr<f32>, #blocked>, tensor<32x32xi32, #blocked> loc(#loc15) // a_ptrs = a_ptr + offs
+    
+    // b_ptrs
     %27 = tt.splat %arg6 : i32 -> tensor<32x1xi32, #blocked3> loc(#loc16)
     %28 = arith.muli %15, %27 : tensor<32x1xi32, #blocked3> loc(#loc16)
     %29 = tt.broadcast %28 : tensor<32x1xi32, #blocked3> -> tensor<32x32xi32, #blocked3> loc(#loc17)
@@ -1320,6 +1360,8 @@ module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.targ
     %31 = arith.addi %30, %23 : tensor<32x32xi32, #blocked> loc(#loc17)
     %32 = tt.splat %arg1 : !tt.ptr<f32> -> tensor<32x32x!tt.ptr<f32>, #blocked> loc(#loc18)
     %33 = tt.addptr %32, %31 : tensor<32x32x!tt.ptr<f32>, #blocked>, tensor<32x32xi32, #blocked> loc(#loc18)
+
+    // c_ptrs
     %34 = tt.splat %arg7 : i32 -> tensor<32x1xi32, #blocked3> loc(#loc19)
     %35 = arith.muli %15, %34 : tensor<32x1xi32, #blocked3> loc(#loc19)
     %36 = tt.broadcast %35 : tensor<32x1xi32, #blocked3> -> tensor<32x32xi32, #blocked3> loc(#loc20)
@@ -1327,14 +1369,15 @@ module attributes {"ttg.num-ctas" = 1 : i32, "ttg.num-warps" = 4 : i32, ttg.targ
     %38 = arith.addi %37, %23 : tensor<32x32xi32, #blocked> loc(#loc20)
     %39 = tt.splat %arg2 : !tt.ptr<f32> -> tensor<32x32x!tt.ptr<f32>, #blocked> loc(#loc21)
     %40 = tt.addptr %39, %38 : tensor<32x32x!tt.ptr<f32>, #blocked>, tensor<32x32xi32, #blocked> loc(#loc21)
+
     %41 = tt.splat %arg3 : i32 -> tensor<32x1xi32, #blocked3> loc(#loc22)
-    %42 = arith.cmpi slt, %15, %41 : tensor<32x1xi32, #blocked3> loc(#loc22)
+    %42 = arith.cmpi slt, %15, %41 : tensor<32x1xi32, #blocked3> loc(#loc22) // offs_m < M
     %43 = tt.splat %arg4 : i32 -> tensor<1x32xi32, #blocked> loc(#loc23)
-    %44 = arith.cmpi slt, %20, %43 : tensor<1x32xi32, #blocked> loc(#loc23)
+    %44 = arith.cmpi slt, %20, %43 : tensor<1x32xi32, #blocked> loc(#loc23) // offs_n < N
     %45 = tt.broadcast %42 : tensor<32x1xi1, #blocked3> -> tensor<32x32xi1, #blocked3> loc(#loc24)
     %46 = ttg.convert_layout %45 : tensor<32x32xi1, #blocked3> -> tensor<32x32xi1, #blocked> loc(#loc24)
     %47 = tt.broadcast %44 : tensor<1x32xi1, #blocked> -> tensor<32x32xi1, #blocked> loc(#loc24)
-    %48 = arith.andi %46, %47 : tensor<32x32xi1, #blocked> loc(#loc24)
+    %48 = arith.andi %46, %47 : tensor<32x32xi1, #blocked> loc(#loc24) // mask
     %49 = tt.load %26, %48, %cst : tensor<32x32x!tt.ptr<f32>, #blocked> loc(#loc25)
     %50 = tt.load %33, %48, %cst : tensor<32x32x!tt.ptr<f32>, #blocked> loc(#loc26)
     %51 = arith.addf %49, %50 : tensor<32x32xf32, #blocked> loc(#loc27)
