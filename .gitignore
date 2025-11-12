@@ -1,0 +1,17 @@
+build/
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Executables
+*.exe
+*.out
+
+# Object files
+*.dll
+*.so
+*.so.*
+*.dylib
+*.o
